@@ -1,0 +1,25 @@
+.form {
+    margin-left: 5%;
+    margin-right: 5%;
+}
+
+.forminput {
+    border: 1px solid black;
+    margin-bottom: 0.5rem;
+}
+
+.formlabel {
+    margin-top: 0.5rem;
+}
+
+.formBtn {
+    text-align: center;
+    padding-bottom: 12px;
+    padding-top: 10px;
+}
+
+.signupform {
+    background-color: transparent;
+    border-radius: 15px;
+    justify-items: center;
+}
