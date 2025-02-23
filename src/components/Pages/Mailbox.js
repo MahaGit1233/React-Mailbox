@@ -1,7 +1,7 @@
 import React from "react";
 import { Button, Navbar } from "react-bootstrap";
 import { useDispatch } from "react-redux";
-import { authActions } from "./Store/redux";
+import { authActions } from "../Store/redux";
 
 const Mailbox = () => {
     const dispatch = useDispatch();

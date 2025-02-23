@@ -1,6 +1,6 @@
 import { useSelector } from "react-redux";
 import { BrowserRouter, Route, Switch } from "react-router-dom/cjs/react-router-dom.min";
-import Mailbox from "./components/Mailbox";
+import Mailbox from "./components/Pages/Mailbox";
 import Signup from "./components/Register/Signup";
 
 function App() {
