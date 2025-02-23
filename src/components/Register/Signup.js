@@ -1,8 +1,9 @@
 import React, { useState } from "react";
-import { useDispatch } from "react-redux";
+import './Signup.css';
+import { Alert, Button, Card, Form } from "react-bootstrap";
+import { NavLink } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
 import { authActions } from "../Store/redux";
-import { Alert, Button, Form } from "react-bootstrap";
-import "./Signup.css";
 
 const Signup = () => {
     const [enteredMail, setEnteredMail] = useState('');
@@ -10,7 +11,14 @@ const Signup = () => {
     const [enteredConfirmPass, setEnteredConfirmPass] = useState('');
     const [error, setError] = useState('');
 
+    const isLogin = useSelector(state => state.auth.isLogin);
     const dispatch = useDispatch();
+
+    const url = isLogin ? 'https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyDH-EyAyyknxTa5hCgJ-ZZEFnrKoB1K4Uw' : 'https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyDH-EyAyyknxTa5hCgJ-ZZEFnrKoB1K4Uw';
+
+    const switchModeHandler = () => {
+        dispatch(authActions.toggle());
+    }
 
     const mailChangeHandler = (event) => {
         setEnteredMail(event.target.value);
@@ -27,12 +35,12 @@ const Signup = () => {
     const formSubmitHandler = (event) => {
         event.preventDefault();
 
-        if (!enteredMail || !enteredPass || !enteredConfirmPass) {
-            setError('All fileds are required to be filled');
+        if (!enteredMail || !enteredPass) {
+            setError("All fields are required to be filled");
             return;
         };
 
-        fetch('https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyAVsqPBQ8Oojgju9UMhzM8IXxv1cIhiQWs', {
+        fetch(url, {
             method: 'POST',
             body: JSON.stringify({
                 email: enteredMail,
@@ -40,11 +48,11 @@ const Signup = () => {
                 returnSecureToken: true,
             }),
             headers: {
-                'Content-Type': 'application/json',
+                'Content-Type': 'application/json'
             },
         }).then(res => {
             if (res.ok) {
-                console.log('User has Successfully Signed Up');
+                console.log('User has successfully signed up');
                 return res.json();
             }
             else {
@@ -54,8 +62,14 @@ const Signup = () => {
                 })
             }
         }).then((data) => {
+            localStorage.setItem('email', enteredMail.replace(/[@.]/g, '_'));
+            if (isLogin) {
+                dispatch(authActions.login({ token: data.idToken }));
+            }
+            else {
+                dispatch(authActions.signup({ token: data.idToken }));
+            }
             console.log(data);
-            dispatch(authActions.signup({ token: data.idToken }));
         }).catch((err) => {
             alert(err.message);
         });
@@ -64,32 +78,68 @@ const Signup = () => {
         setEnteredPass('');
         setEnteredConfirmPass('');
         setError('');
+    };
 
-    }
+    const signup = <Form className="form" onSubmit={formSubmitHandler}>
+        <h1>Register</h1>
+        <Form.Group>
+            <Form.Label className="formlabel">Email Id:</Form.Label>
+            <Form.Control style={{ backgroundColor: '#efebeb' }} className="forminput" type="email" value={enteredMail} onChange={mailChangeHandler} placeholder="Enter your mail Id" />
+        </Form.Group>
+        <Form.Group>
+            <Form.Label className="formlabel">Password:</Form.Label>
+            <Form.Control style={{ backgroundColor: '#efebeb' }} className="forminput" type="password" value={enteredPass} onChange={passChangeHandler} placeholder="Enter Password" />
+        </Form.Group>
+        <Form.Group>
+            <Form.Label className="formlabel">Confirm Password:</Form.Label>
+            <Form.Control style={{ backgroundColor: '#efebeb' }} className="forminput" type="password" value={enteredConfirmPass} onChange={confirmPassChangeHandler} placeholder="Confirm your Password" />
+        </Form.Group>
+        {error && <Alert variant="danger">{error}</Alert>}
+        <div className="formBtn">
+            <Button type="submit" variant="outline-dark">Sign Up</Button>
+        </div>
+    </Form>
+
+    const login = <Form className="form1" onSubmit={formSubmitHandler}>
+        <Form.Group>
+            <Form.Label className="formlabel">Email Id:</Form.Label>
+            <Form.Control style={{ backgroundColor: '#efebeb' }} className="forminput" type="email" value={enteredMail} onChange={mailChangeHandler} placeholder="Enter your mail Id" />
+        </Form.Group>
+        <Form.Group>
+            <Form.Label className="formlabel">Password:</Form.Label>
+            <Form.Control style={{ backgroundColor: '#efebeb' }} className="forminput" type="password" value={enteredPass} onChange={passChangeHandler} placeholder="Enter your Password" />
+        </Form.Group>
+        <div className="formBtn">
+            <div>
+                <NavLink to="/forgot-password">Forgot Password</NavLink>
+            </div>
+            <Button type="submit" variant="outline-dark">Login</Button>
+        </div>
+    </Form>
 
     return (
-        <div className="signupform">
-            <Form className="form" onSubmit={formSubmitHandler}>
-                <h1>Register</h1>
-                <Form.Group>
-                    <Form.Label className="formlabel">Email Id:</Form.Label>
-                    <Form.Control style={{ backgroundColor: '#efebeb' }} className="forminput" type="email" placeholder="Enter your mail Id" value={enteredMail} onChange={mailChangeHandler} />
-                </Form.Group>
-                <Form.Group>
-                    <Form.Label className="formlabel">Password:</Form.Label>
-                    <Form.Control style={{ backgroundColor: '#efebeb' }} className="forminput" type="password" placeholder="Enter Password" value={enteredPass} onChange={passChangeHandler} />
-                </Form.Group>
-                <Form.Group>
-                    <Form.Label className="formlabel">Confirm Password:</Form.Label>
-                    <Form.Control style={{ backgroundColor: '#efebeb' }} className="forminput" type="password" placeholder="Confirm your password" value={enteredConfirmPass} onChange={confirmPassChangeHandler} />
-                </Form.Group>
-                {error && <Alert variant="danger">{error}</Alert>}
-                <div className="formBtn">
-                    <Button type="submit" variant="outline-dark">Sign Up</Button>
+        <Card className="card">
+            <Card.Body className="cardbody">
+                {!isLogin ? <div className="body">
+                    <div className="bodyItems">
+                        <h1>Welcome!</h1>
+                        <h5>Sign up to create an account</h5>
+                        <Button onClick={switchModeHandler} variant="outline-dark">{isLogin ? "Don't have an account? Sign up" : " Already have an account? Login"}</Button>
+                    </div>
+                </div> :
+                    <div className="body1">
+                        <div className="bodyItems1">
+                            <h1>Welcome Back!</h1>
+                            <h5>Log In to proceed to your account</h5>
+                            <Button onClick={switchModeHandler} variant="outline-dark">{isLogin ? "Don't have an account? Sign up" : " Already have an account? Login"}</Button>
+                        </div>
+                    </div>}
+                <div className="signupform">
+                    {isLogin ? login : signup}
                 </div>
-            </Form>
-        </div>
-    )
+            </Card.Body>
+        </Card>
+    );
 };
 
 export default Signup;

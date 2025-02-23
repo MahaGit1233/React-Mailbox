@@ -1,10 +1,17 @@
+import { useSelector } from "react-redux";
+import { BrowserRouter, Route, Switch } from "react-router-dom/cjs/react-router-dom.min";
+import Mailbox from "./components/Mailbox";
 import Signup from "./components/Register/Signup";
 
 function App() {
+  const isLoggedIn = useSelector(state => state.auth.isAuthenticated);
+
   return (
-    <div>
-      <Signup />
-    </div>
+    <BrowserRouter>
+      <Switch>
+        <Route path="/" exact >{isLoggedIn ? <Mailbox /> : <Signup />}</Route>
+      </Switch>
+    </BrowserRouter>
   );
 }
 
