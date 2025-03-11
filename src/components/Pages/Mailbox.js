@@ -140,6 +140,20 @@ const Mailbox = () => {
         }
     };
 
+    const deleteMailHandler = async (id, type) => {
+        const senderEmail = localStorage.getItem('email').replace(/[.@]/g, '_');
+
+        const url = type === 'sent' ? `https://mailbox-43158-default-rtdb.firebaseio.com/sent/${senderEmail}/${id}.json` : `https://mailbox-43158-default-rtdb.firebaseio.com/receiver/${senderEmail}/${id}.json`;
+
+        await fetch(url, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
+        dispatch(mailboxActions.deleteMails(id));
+    }
+
     return (
         <div>
             <Navbar className="bg-secondary justify-content-between" style={{ color: "white", display: 'flex', justifyContent: 'space-between' }}>
@@ -155,12 +169,12 @@ const Mailbox = () => {
                 <Container style={{ border: 'none', height: '85vh', marginTop: '5%', width: '80%', borderRadius: '10px', backgroundColor: 'whitesmoke' }}>
                     <div>
                         <h5 style={{ marginLeft: '50%', paddingTop: '10px' }}>INBOX</h5>
-                        <Route path="/" component={Inbox} />
+                        <Route path="/"><Inbox onDelete={deleteMailHandler} /></Route>
                     </div>
                     <div style={{ borderBottom: '1px solid black', padding: '10px' }}></div>
                     <div>
                         <h5 style={{ marginLeft: '50%', paddingTop: '10px' }}>SENT</h5>
-                        <Route path="/" component={Sent} />
+                        <Route path="/"><Sent onDelete={deleteMailHandler} /></Route>
                     </div>
                 </Container>
             </div>

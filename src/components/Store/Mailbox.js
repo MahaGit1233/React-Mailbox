@@ -30,6 +30,11 @@ const mailboxSlice = createSlice({
                 localStorage.setItem("readMails", JSON.stringify(state.readMails));
             }
         },
+        deleteMails(state, action) {
+            const mailId = action.payload;
+            state.receivedMails = state.receivedMails.filter(mail => mail.id !== mailId);
+            state.sentMails = state.sentMails.filter(mail => mail.id !== mailId);
+        },
     },
 });
 
