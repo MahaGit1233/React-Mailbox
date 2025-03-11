@@ -8,6 +8,7 @@ import MailboxItems from "./MailboxItems";
 import Inbox from "./Inbox";
 import Sent from "./Sent";
 import { Route } from "react-router-dom";
+import { BrowserRouter, Switch } from "react-router-dom";
 
 const Mailbox = () => {
     const [showMailbox, setShowMailbox] = useState(false);
@@ -167,15 +168,8 @@ const Mailbox = () => {
                     <MailboxItems />
                 </Container>
                 <Container style={{ border: 'none', height: '85vh', marginTop: '5%', width: '80%', borderRadius: '10px', backgroundColor: 'whitesmoke' }}>
-                    <div>
-                        <h5 style={{ marginLeft: '50%', paddingTop: '10px' }}>INBOX</h5>
-                        <Route path="/"><Inbox onDelete={deleteMailHandler} /></Route>
-                    </div>
-                    <div style={{ borderBottom: '1px solid black', padding: '10px' }}></div>
-                    <div>
-                        <h5 style={{ marginLeft: '50%', paddingTop: '10px' }}>SENT</h5>
-                        <Route path="/"><Sent onDelete={deleteMailHandler} /></Route>
-                    </div>
+                    <Route path="/"><Inbox onDelete={deleteMailHandler} /></Route>
+                    <Route path="/sent"><Sent onDelete={deleteMailHandler} /></Route>
                 </Container>
             </div>
         </div>

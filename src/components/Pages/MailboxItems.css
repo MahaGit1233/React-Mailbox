@@ -1,0 +1,7 @@
+.items a:hover,
+.items a:active,
+.items a.active {
+    color: #95bcf0;
+    padding-bottom: 0.25rem;
+    border-bottom: 3px solid #d695f0;
+}
