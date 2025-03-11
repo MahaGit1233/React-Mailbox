@@ -1,22 +1,14 @@
 import React, { useState } from "react";
 import { Button, Card } from "react-bootstrap";
-import { useDispatch, useSelector } from "react-redux";
 import { NavLink } from "react-router-dom";
-import { mailboxActions } from "../Store/redux";
+import useMailbox from "./inboxuseMailbox";
 
 const Inbox = (props) => {
     const [isHover, setIsHover] = useState(null);
 
     console.log('inbox is working');
-    const dispatch = useDispatch();
-    const receivedMails = useSelector(state => state.mailbox.receivedMails);
-    const read = useSelector(state => state.mailbox.readMails || []);
 
-    console.log('readMails', read);
-
-    const readHandler = (id) => {
-        dispatch(mailboxActions.readMails(id));
-    };
+    const { receivedMails, read, readHandler } = useMailbox();
 
     const hoverInHandler = (id) => {
         setIsHover(id);

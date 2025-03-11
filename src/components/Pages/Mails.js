@@ -3,8 +3,8 @@ import { Button, Card, Container, Navbar } from "react-bootstrap";
 import { useLocation } from "react-router-dom";
 import { NavLink } from "react-router-dom";
 import MailboxItems from "./MailboxItems";
-import { useDispatch } from "react-redux";
-import { authActions } from "../Store/redux";
+import useExtractMailData from "./useExtractData";
+import useAuth from "./MailboxuseAuth";
 
 const Mails = () => {
     const location = useLocation();
@@ -14,18 +14,9 @@ const Mails = () => {
     const name = data.name;
     const mail = data.mail;
 
-    const parts = text.split(".");
-    const greeting = parts[0] ? parts[0] + "." : "";
-    const body = parts[1] ? parts[1] + "." : "";
-    const closing = parts[2] ? parts[2].trim() : "";
-    const senderEmail = parts[3] ? parts[3].trim() : "";
-    const com = parts[4] ? parts[4].trim() : "";
+    const { greeting, body, closing, senderEmail, com } = useExtractMailData(text);
 
-    const dispatch = useDispatch();
-
-    const logoutHandler = () => {
-        dispatch(authActions.logout());
-    };
+    const { logoutHandler } = useAuth();
 
     return (
         <div>

@@ -1,16 +1,17 @@
 import React, { useState } from "react";
 import { Button, Card, Container, Navbar } from "react-bootstrap";
-import { useDispatch, useSelector } from "react-redux";
 import { NavLink } from "react-router-dom";
 import MailboxItems from "./MailboxItems";
-import { authActions } from "../Store/redux";
+import useMailbox from "./inboxuseMailbox";
+import useAuth from "./MailboxuseAuth";
 
 const Sent = (props) => {
     const [isHover, setIsHover] = useState(null);
 
     console.log('sent is working');
-    const sentMails = useSelector(state => state.mailbox.sentMails);
-    const dispatch = useDispatch();
+
+    const { sentMails } = useMailbox();
+    const { logoutHandler } = useAuth();
 
     const hoverInHandler = (id) => {
         setIsHover(id);
@@ -18,10 +19,6 @@ const Sent = (props) => {
 
     const hoverOutHandler = () => {
         setIsHover(null);
-    };
-
-    const logoutHandler = () => {
-        dispatch(authActions.logout());
     };
 
     return (

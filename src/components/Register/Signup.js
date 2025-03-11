@@ -1,83 +1,28 @@
-import React, { useState } from "react";
+import React from "react";
 import './Signup.css';
 import { Alert, Button, Card, Form } from "react-bootstrap";
 import { NavLink } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
-import { authActions } from "../Store/redux";
+import useSignupForm from "./useSignup";
+import useAuth from "./useAuth";
 
 const Signup = () => {
-    const [enteredMail, setEnteredMail] = useState('');
-    const [enteredPass, setEnteredPass] = useState('');
-    const [enteredConfirmPass, setEnteredConfirmPass] = useState('');
-    const [error, setError] = useState('');
+    const {
+        enteredMail,
+        enteredPass,
+        enteredConfirmPass,
+        error,
+        setError,
+        mailChangeHandler,
+        passChangeHandler,
+        confirmPassChangeHandler,
+        resetForm
+    } = useSignupForm();
 
-    const isLogin = useSelector(state => state.auth.isLogin);
-    const dispatch = useDispatch();
-
-    const url = isLogin ? 'https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyDH-EyAyyknxTa5hCgJ-ZZEFnrKoB1K4Uw' : 'https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyDH-EyAyyknxTa5hCgJ-ZZEFnrKoB1K4Uw';
-
-    const switchModeHandler = () => {
-        dispatch(authActions.toggle());
-    }
-
-    const mailChangeHandler = (event) => {
-        setEnteredMail(event.target.value);
-    };
-
-    const passChangeHandler = (event) => {
-        setEnteredPass(event.target.value);
-    };
-
-    const confirmPassChangeHandler = (event) => {
-        setEnteredConfirmPass(event.target.value);
-    };
+    const { isLogin, switchModeHandler, authenticateUser } = useAuth();
 
     const formSubmitHandler = (event) => {
         event.preventDefault();
-
-        if (!enteredMail || !enteredPass) {
-            setError("All fields are required to be filled");
-            return;
-        };
-
-        fetch(url, {
-            method: 'POST',
-            body: JSON.stringify({
-                email: enteredMail,
-                password: enteredPass,
-                returnSecureToken: true,
-            }),
-            headers: {
-                'Content-Type': 'application/json'
-            },
-        }).then(res => {
-            if (res.ok) {
-                console.log('User has successfully signed up');
-                return res.json();
-            }
-            else {
-                return res.json().then((data) => {
-                    alert(data.error.message);
-                    console.log(data.error.message);
-                })
-            }
-        }).then((data) => {
-            localStorage.setItem('email', enteredMail.replace(/[@.]/g, '_'));
-            if (isLogin) {
-                dispatch(authActions.login({ token: data.idToken }));
-            }
-            else {
-                dispatch(authActions.signup({ token: data.idToken }));
-            }
-            console.log(data);
-        }).catch((err) => {
-            alert(err.message);
-        });
-
-        setEnteredMail('');
-        setEnteredPass('');
-        setEnteredConfirmPass('');
-        setError('');
+        authenticateUser(enteredMail, enteredPass, setError, resetForm);
     };
 
     const signup = <Form className="form" onSubmit={formSubmitHandler}>

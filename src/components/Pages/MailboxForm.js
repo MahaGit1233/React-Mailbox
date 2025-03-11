@@ -1,61 +1,23 @@
-import { EditorState } from "draft-js";
 import ReactDOM from 'react-dom';
-import React, { useState } from "react";
+import React from "react";
 import { Button, Form, InputGroup } from "react-bootstrap";
 import { Editor } from "react-draft-wysiwyg";
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 import './MailboxForm.css';
+import useMailboxForm from "./useMailboxForm";
 
 const Backdrop = (props) => {
-    const [enteredName, setEnteredName] = useState('');
-    const [enteredMail, setEnteredMail] = useState('');
-    const [enteredSubject, setEnteredSubject] = useState('');
-    const [editorState, setEditorState] = useState(EditorState.createEmpty());
-
-    const nameChangeHandler = (event) => {
-        setEnteredName(event.target.value);
-    };
-
-    const mailChangeHandler = (event) => {
-        setEnteredMail(event.target.value);
-    };
-
-    const subjectChangeHandler = (event) => {
-        setEnteredSubject(event.target.value);
-    };
-
-    const mailSubmitHandler = (event) => {
-        event.preventDefault();
-
-        const Mails = {
-            name: enteredName,
-            mailId: enteredMail,
-            subject: enteredSubject,
-            text: editorState,
-        };
-
-        if (enteredName.length === 0) {
-            alert("Please enter the sender's name");
-        }
-        if (enteredMail.length === 0) {
-            alert("Please give mail Id");
-        }
-        if (enteredSubject.length === 0) {
-            alert("Please add subject to the mail");
-        }
-        if (!editorState.getCurrentContent().hasText()) {
-            alert("Please enter your mail");
-            return;
-        }
-        else {
-            props.onAddMail(Mails);
-        }
-
-        setEnteredName('');
-        setEnteredMail('');
-        setEnteredSubject('');
-        setEditorState(EditorState.createEmpty());
-    }
+    const {
+        enteredName,
+        enteredMail,
+        enteredSubject,
+        editorState,
+        nameChangeHandler,
+        mailChangeHandler,
+        subjectChangeHandler,
+        setEditorState,
+        mailSubmitHandler,
+    } = useMailboxForm(props.onAddMail, props.onClose);
 
     return (
         <div className="backdrop">
