@@ -6,8 +6,8 @@ const useAuth = () => {
     const dispatch = useDispatch();
 
     const authUrl = isLogin
-        ? 'https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyDH-EyAyyknxTa5hCgJ-ZZEFnrKoB1K4Uw'
-        : 'https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyDH-EyAyyknxTa5hCgJ-ZZEFnrKoB1K4Uw';
+        ? 'https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyAv6Q81HIiO4BuURCLln0J-TiBe1mdXODM'
+        : 'https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyAv6Q81HIiO4BuURCLln0J-TiBe1mdXODM';
 
     const switchModeHandler = () => {
         dispatch(authActions.toggle());
